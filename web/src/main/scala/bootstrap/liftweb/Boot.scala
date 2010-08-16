@@ -10,6 +10,7 @@ import Helpers._
 import tacet.rest.{RestReports, RestMeasurements}
 import tacet.model.MongoDB
 import com.mongodb.Mongo
+import net.liftweb.widgets.flot.Flot
 
 class Boot {
   def boot {
@@ -41,6 +42,8 @@ class Boot {
     }).getDB(_db)
 
     MongoDB.db = db
+
+    Flot.init
   }
 }
 

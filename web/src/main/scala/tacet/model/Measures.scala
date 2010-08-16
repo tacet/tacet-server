@@ -9,7 +9,7 @@ case class Measure(
         source: String,
         kind: String,
         name: String,
-        value: Long,
+        value: Double,
         tags: List[String],
         date: Date,
         children: List[Measure]) extends MongoObject

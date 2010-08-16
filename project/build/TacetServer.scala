@@ -12,6 +12,7 @@ class TacetServer(info: ProjectInfo) extends ParentProject(info) {
     def lift(name:String) = "net.liftweb" %% ("lift-"+name) % "2.1-M1"
 
     val webkit = lift("webkit")
+    val widgets = lift("widgets")
     val scala_mongo_driver = "com.osinka" %% "mongo-scala-driver" % "0.8.2"
 
     val jetty6 = "org.mortbay.jetty" % "jetty" % "6.1.21" % "test"

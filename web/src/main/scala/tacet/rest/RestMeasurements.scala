@@ -5,10 +5,11 @@ import net.liftweb.util.Helpers._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{NoContentResponse, Req}
 import java.util.Date
-import net.liftweb.json.{DefaultFormats, DateFormat}
 import net.liftweb.json.JsonAST.{JValue}
 import model._
 import util.Random
+import net.liftweb.common.Full
+import net.liftweb.json.{Extraction, DefaultFormats, DateFormat}
 
 object RestMeasurements extends RestHelper {
   override def suplimentalJsonResponse_?(req: Req) = true
@@ -37,7 +38,7 @@ object RestMeasurements extends RestHelper {
   case class Measurement(
           kind: String,
           name: String,
-          value: Long,
+          value: Double,
           tags: List[String],
           properties: Map[String, String],
           children: List[Measurement]) {
@@ -58,8 +59,19 @@ object RestMeasurements extends RestHelper {
         NoContentResponse()
       }
 
-    case JsonGet("api" :: "cpu" :: Nil, _) =>
-      Generator ! Generate(1.minute.later, 1 second, () => Measure.save(Measure("lift", "cpu", "cpu1", Random.nextInt(100), Nil, now, Nil)))
+    case JsonGet("api" :: "example" :: Nil, _) =>
+      Full(Extraction.decompose(
+        RootNode("server", now, List(
+          Measurement("java", "Hello.world", 10.3, List("a", "b"), Map("a" -> "b"), List(
+            Measurement("java", "system.out.println", 2.0, List("a", "b"), Map("a" -> "b"), Nil)
+            ))))))
+
+    case JsonGet("api" :: "cpu" :: name :: Nil, _) =>
+      Generator ! Generate(1.minute.later, 1 second, () => Measure.save(Measure("lift", "cpu", name, Random.nextDouble * 100, Nil, now, Nil)))
+      NoContentResponse()
+
+    case JsonDelete("api" :: "db" :: Nil, _) =>
+      MongoDB.db.dropDatabase
       NoContentResponse()
   }
 }
