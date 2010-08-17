@@ -28,6 +28,12 @@ class Graph extends DispatchSnippet {
     val width = S.attr("width").openOr("600px")
     val height = S.attr("height").openOr("300px")
 
-    <div id={id} style={"width:" + width + ";height:" + height}/> ++ Flot.render(id, series.toList, new FlotOptions {}, Flot.script(NodeSeq.Empty))
+    val options = new FlotOptions {
+      override def xaxis = Full(new FlotAxisOptions{
+        override def mode = Full("time")
+      })
+    }
+
+    <div id={id} style={"width:" + width + ";height:" + height}/> ++ Flot.render(id, series.toList, options, Flot.script(NodeSeq.Empty))
   }
 }

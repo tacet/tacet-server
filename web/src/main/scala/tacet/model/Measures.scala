@@ -12,6 +12,7 @@ case class Measure(
         value: Double,
         tags: List[String],
         date: Date,
+        properties: Map[String, String],
         children: List[Measure]) extends MongoObject
 
 object Measure extends MongoObjectShape[Measure] {
@@ -25,9 +26,10 @@ object Measure extends MongoObjectShape[Measure] {
   def value = scalar("value", _.value)
   def tags = array("tags", _.tags)
   def date = scalar("date", _.date)
+  def properties = map("properties", _.properties)
   def children = arrayRef("children", Collection, _.children)
 
-  override def * = List(source, kind, name, value, tags, date, children)
+  override def * = List(source, kind, name, value, tags, date, properties, children)
 
   override def factory(dbo: DBObject) =
     for{
@@ -37,8 +39,9 @@ object Measure extends MongoObjectShape[Measure] {
       v <- value from dbo
       t <- tags from dbo
       d <- date from dbo
+      p <- properties from dbo
       c <- children from dbo
-    } yield Measure(s, k, n, v, t.toList, d, c.toList)
+    } yield Measure(s, k, n, v, t.toList, d, p, c.toList)
 
   def save(measure:Measure){
     measure.children.foreach(save)

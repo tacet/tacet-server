@@ -3,6 +3,7 @@ package bootstrap.liftweb
 import net.liftweb.util._
 import net.liftweb.common._
 import net.liftweb.http._
+import js.jquery.JQuery14Artifacts
 import net.liftweb.http.provider._
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc._
@@ -18,10 +19,11 @@ class Boot {
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
     LiftRules.statelessDispatchTable.append(RestMeasurements)
-
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
-    def menus = List(Menu("Home") / "index")
+    def menus = List(
+      Menu("Home") / "index",
+      Menu("Call") / "call")
 
     LiftRules.setSiteMapFunc(() => SiteMap(menus :_*))
 
