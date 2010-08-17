@@ -7,7 +7,7 @@ import net.liftweb.http.provider._
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc._
 import Helpers._
-import tacet.rest.{RestReports, RestMeasurements}
+import tacet.rest._
 import tacet.model.MongoDB
 import com.mongodb.Mongo
 import net.liftweb.widgets.flot.Flot
@@ -18,7 +18,6 @@ class Boot {
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
     LiftRules.statelessDispatchTable.append(RestMeasurements)
-    LiftRules.statelessDispatchTable.append(RestReports)
 
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 

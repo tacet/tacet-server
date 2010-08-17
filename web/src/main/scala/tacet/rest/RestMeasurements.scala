@@ -5,25 +5,37 @@ import net.liftweb.util.Helpers._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{NoContentResponse, Req}
 import java.util.Date
-import net.liftweb.json.JsonAST.{JValue}
 import model._
 import util.Random
 import net.liftweb.common.Full
-import net.liftweb.json.{Extraction, DefaultFormats, DateFormat}
+import net.liftweb.json._
+import net.liftweb.json.JsonAST.{JInt, JValue}
 
 object RestMeasurements extends RestHelper {
   override def suplimentalJsonResponse_?(req: Req) = true
 
-  implicit val WebFormats = new DefaultFormats {
-    override val dateFormat = new DateFormat {
-      def parse(s: String) =
-        (for{
-          l <- tryo {s.toLong}
-        } yield new Date(l)).toOption
+//  implicit val WebFormats = new DefaultFormats {
+//    override val dateFormat = new DateFormat {
+//      def parse(s: String) =
+//        (for{
+//          l <- tryo {s.toLong}
+//        } yield new Date(l)).toOption
+//
+//      def format(d: Date) = "" + d.getTime
+//    }
+//  }
 
-      def format(d: Date) = "" + d.getTime
+  implicit val WebFormats = DefaultFormats + (new Serializer[Date]{
+    val DateClass = classOf[Date]
+
+    def deserialize(implicit format: Formats) = {
+      case (TypeInfo(DateClass, _), JInt(num)) => new Date(num.toLong)
     }
-  }
+
+    def serialize(implicit format: Formats) = {
+      case date:Date => JInt(date.getTime)
+    }
+  })
 
   object RootNode {
     def from(json: JValue) = tryo {json.extract[RootNode]}
